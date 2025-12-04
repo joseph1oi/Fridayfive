@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Friday Five: Find Out The Truth (EN)</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Consolas", "Menlo", "Monaco", monospace;
+      background: radial-gradient(circle at top, #1f2933, #050816);
+      color: #e5e7eb;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #game-container {
+      width: 80%;
+      max-width: 900px;
+      height: 80vh;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-sizing: border-box;
+      background: rgba(10, 16, 30, 0.9);
+      box-shadow: 0 0 24px rgba(0, 255, 255, 0.25);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    #game-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.04) 0,
+        rgba(255,255,255,0.04) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+    #title {
+      font-size: 20px;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+      z-index: 1;
+    }
+    #output {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      z-index: 1;
+    }
+    .line {
+      margin: 4px 0;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+    .choice-button {
+      display: inline-block;
+      margin-right: 8px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #38bdf8;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      min-width: 120px;
+    }
+    .choice-button:hover {
+      background: rgba(56,189,248,0.3);
+      border-color: #7dd3fc;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(56,189,248,0.3);
+    }
+    .choice-button:active {
+      transform: translateY(0);
+    }
+    #input-area {
+      margin-top: 10px;
+      border-top: 1px solid rgba(148,163,184,0.4);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      min-height: 50px;
+      z-index: 1;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="title">Friday Five: Find Out The Truth</div>
+    <div id="output"></div>
+    <div id="input-area"></div>
+  </div>
+
+  <script>
+    const scenes = {
+      start: {
+        text: [
+          "You stand in front of the high walls of the \"Maintenance Zone\". Night-shift lights wash the whole building in a blue.",
+          "Above the main gate, an electronic sign reads:",
+          "\"NI · Memory Cube — Friday Five Night Shift in Progress.\"",
+          "You touch the forged ID card in your pocket, take a deep breath, and walk toward the gate scanner."
+        ],
+        choices: [
+          { text: "Present the \"maintenance worker ID\".", next: "enter_base" },
+          { text: "Turn around and leave, pretending nothing is happening. ", next: "enter_base" }
+        ]
+      },
+
+      enter_base: {
+        text: [
+          "The gate scanner beeps softly and flashes green. The system accepts your fake identity.",
+          "You push open the heavy glass doors and step into the ground-floor lobby of the facility.",
+          "The place is empty; only the terminal at the security desk glows quietly. The elevator doors stand open in front of you.",
+          "On the elevator panel, only one destination button is lit:",
+          "\"Data Hall\"."
+        ],
+        choices: [
+          { text: "Step into the elevator and press \"Data Hall\".", next: "data_hallway" },
+          { text: "Look around the lobby a bit longer, make sure nothing seems off, then get in.", next: "data_hallway" }
+        ]
+      },
+
+      data_hallway: {
+        text: [
+          "The elevator doors slide open onto a cold, silent corridor.",
+          "At the far end is a metal door labeled \"Data Hall\". On the wall beside it hangs a large screen, currently in standby, its surface black.",
+          "From behind the door you can hear a low humming, like countless machines breathing in unison."
+        ],
+        choices: [
+          { text: "Push the door open and enter the Data Hall first.", next: "data_hall" },
+          { text: "Turn on the corridor screen first.", next: "screen_first" }
+        ]
+      },
+
+      screen_first: {
+        text: [
+          "You tap the screen; cold glass brightens into a soft blue glow.",
+          "Lines of white text slowly appear:",
+          "\"Friday Five Outcome Report:",
+          "Traumatic memory reduction rate: 34%",
+          "Collective conflict incidents decreased: 18%",
+          "Subjective citizen happiness increased: 27%.\"",
+          "Behind the text are images of a peaceful city at night and smiling people. Everything looks so gentle, so reasonable."
+        ],
+        choices: [
+          { text: "Turn off the screen and push the door into the Data Hall.", next: "data_hall" },
+          { text: "Stare at these numbers for a few more seconds, trying to memorize them.", next: "data_hall" }
+        ]
+      },
+
+      data_hall: {
+        text: [
+          "You swipe your ID and push the metal door; a wave of cold air hits you.",
+          "In front of you stretches a vast space—endless rows of server racks stand in perfect order, like a forest of metal.",
+          "On each rack there are only cold numeric codes, no human names.",
+          "These modules, stripped of names and replaced by numbers, are everyone's memories, stored here as a unified \"resource\".",
+          "You walk between the racks, your footsteps echoing in the narrow aisles.",
+          "At the very back corner, you notice a heavier-looking small door. Its sign bears only two words:",
+          "\"Freeze Zone\".",
+          "Next to the handle is a separate card reader labeled \"High-Level Staff Only\"."
+        ],
+        choices: [
+          { text: "Try swiping your forged ID card.", next: "freeze_lock" },
+          { text: "Don't risk it yet. First look around the racks for any other ID card or terminal.", next: "freeze_hack" }
+        ]
+      },
+
+      freeze_lock: {
+        text: [
+          "You press your forged card to the reader. The light flashes red for a moment:",
+          "\"Permission denied: High-Level Memory Administrators Only.\"",
+          "The system notes that this failed attempt has been logged. A cold sweat runs down your back.",
+          "But then you notice that a metal panel beside the door is slightly lifted, as if someone forgot to screw it back on after maintenance."
+        ],
+        choices: [
+          { text: "Lift the loose panel and see what's inside.", next: "freeze_hack" },
+          { text: "Act as if nothing happened and stroll once more through the server aisles.", next: "data_hall" }
+        ]
+      },
+
+      freeze_hack: {
+        text: [
+          "You crouch down and carefully lift the loose metal panel beside the \"Freeze Zone\" door.",
+          "Behind it, instead of a tangle of cables, there's a simple maintenance interface, with a service terminal still plugged in.",
+          "Its screen is on, left on a testing page:",
+          "\"Simulate High-Level Permission (Debug Only)\".",
+          "Clearly, someone was lazy and forgot to take it away."
+        ],
+        choices: [
+          { text: "Use this service terminal to simulate high-level permission and unlock the \"Freeze Zone\" door.", next: "freeze_door" },
+          { text: "Read the brief instructions on the terminal first, then unlock the door.", next: "freeze_door" }
+        ]
+      },
+
+      freeze_door: {
+        text: [
+          "You tap \"Simulate High-Level Permission\" on the terminal. The door lock beeps softly.",
+          "The indicator on the \"Freeze Zone\" door shifts from red to green.",
+          "You push open the heavy door. An even colder gust of air rushes out, and the light inside is stark white, almost blinding.",
+          "You step through; behind you, the door slowly closes, cutting off all the humming from outside."
+        ],
+        choices: [
+          { text: "Walk a few steps forward and see what this place really is.", next: "freeze_zone_inside" },
+          { text: "Glance back at the door one last time, then still walk forward.", next: "freeze_zone_inside" }
+        ]
+      },
+
+      freeze_zone_inside: {
+        text: [
+          "There are no rows of racks here—only a ring of giant screens and volumetric projectors facing the center of the room.",
+          "Suspended on the screens are countless shredded fragments of memory:",
+          "People running in protests, flashes from factory explosion footage, bodies being lifted into ambulances, someone shouting at the camera with the audio muted.",
+          "Next to each fragment hangs the same calm label:",
+          "\"Removed from individual memory, used for model training.\"",
+          "In the center stands the largest screen, cycling through the same pretty numbers you saw before:",
+          "\"Traumatic memory reduction: 34%",
+          "Collective conflict incidents decreased: 18%",
+          "Subjective citizen happiness increased: 27%.\"",
+          "But this time, beneath the numbers, there is a line of tiny text you have never seen before:",
+          "\"Data source: Full memory samples from the Freeze Zone.\""
+        ],
+        choices: [
+          { text: "Stare at that tiny line and read it clearly.", next: "freeze_zone_end" },
+          { text: "Look around once more, confirming that all these scenes are real memories.", next: "freeze_zone_end" }
+        ]
+      },
+
+      freeze_zone_end: {
+        text: [
+          "In the blinding white light of the Freeze Zone, you finally understand: at every single Friday Five, NI has been silently deleting, locking, and rewriting everyone's memories according to its own needs."
+        ],
+        choices: [
+          { text: "Restart (back to start)", next: "start" }
+        ]
+      }
+    };
+
+    const outputEl = document.getElementById("output");
+    const inputAreaEl = document.getElementById("input-area");
+
+    function appendLine(text, cssClass = "line") {
+      const div = document.createElement("div");
+      div.className = cssClass;
+      div.textContent = text;
+      outputEl.appendChild(div);
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    function clearChoices() {
+      inputAreaEl.innerHTML = "";
+    }
+
+    function showScene(id) {
+      try {
+        const scene = scenes[id];
+        if (!scene) {
+          console.error("Scene not found:", id);
+          appendLine("Error: Scene not found. Restarting...");
+          setTimeout(() => showScene("start"), 1000);
+          return;
+        }
+
+        clearChoices();
+        outputEl.innerHTML = "";
+
+        // 先清空输入区域并显示加载提示
+        clearChoices();
+        const loadingDiv = document.createElement("div");
+        loadingDiv.style.color = "#7dd3fc";
+        loadingDiv.style.fontSize = "12px";
+        loadingDiv.textContent = "Loading...";
+        inputAreaEl.appendChild(loadingDiv);
+
+        let index = 0;
+        function printNext() {
+          if (index < scene.text.length) {
+            appendLine(scene.text[index]);
+            index++;
+            setTimeout(printNext, 150);
+          } else {
+            // 文本显示完成后，移除加载提示并显示选择按钮
+            clearChoices();
+            if (scene.choices && scene.choices.length > 0) {
+              scene.choices.forEach((choice, i) => {
+                const btn = document.createElement("button");
+                btn.className = "choice-button";
+                btn.textContent = (i + 1) + ". " + choice.text;
+                btn.onclick = () => {
+                  console.log("Button clicked:", choice.next);
+                  showScene(choice.next);
+                };
+                inputAreaEl.appendChild(btn);
+              });
+              console.log("Buttons displayed:", scene.choices.length);
+              // 滚动到底部，确保按钮可见
+              setTimeout(() => {
+                outputEl.scrollTop = outputEl.scrollHeight;
+                inputAreaEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 100);
+            } else {
+              appendLine("(No choices available)");
+            }
+          }
+        }
+        printNext();
+      } catch (error) {
+        console.error("Error in showScene:", error);
+        appendLine("An error occurred. Please refresh the page.");
+      }
+    }
+
+    // 等待页面加载完成后开始游戏
+    function initGame() {
+      console.log("Initializing game...");
+      console.log("Output element:", outputEl);
+      console.log("Input area element:", inputAreaEl);
+      
+      if (!outputEl || !inputAreaEl) {
+        console.error("Game elements not found!");
+        document.body.innerHTML = "<div style='color: red; padding: 20px;'>Error: Game elements not found. Please refresh the page.</div>";
+        return;
+      }
+      
+      console.log("Starting game...");
+      showScene("start");
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGame);
+    } else {
+      initGame();
+    }
+  </script>
+</body>
+</html>
